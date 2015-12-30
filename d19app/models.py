@@ -33,7 +33,9 @@ class CTRecordModel(models.Model):
 	#根据tag区分不同种类的记录，同一个用户相同TAG的事件要严格一致
 	recordTag = models.CharField(max_length = 128)
 	#userId 外键
-	userId = models.ForeignKey(CTRUser)
+	user = models.ForeignKey(CTRUser)
+	#recordDate
+	recordDate = models.DateTimeField(default = timezone.now)
 
 	def __unicode__(self):
 		return self.recordTag + str(self.recordId)
@@ -45,9 +47,9 @@ class CTRecordPoint(models.Model):
 	#每个点在单条记录内的唯一标识符
 	pointId = models.AutoField(primary_key = True)
 	#recordId 外键
-	recordId = models.ForeignKey(CTRecordModel)
-	#记录的原始数据
-	recordDate = models.DateTimeField();
+	fatherRecord = models.ForeignKey(CTRecordModel)
+	#记录的原始数据 由于时间精度需达到毫秒以后两位 这里使用char保存从1970到当前的ms数
+	timestamp = models.CharField(max_length = 128, default = '0.0')
 	#该记录点的键
 	key = models.CharField(max_length = 128)
 	#该记录点在记录中的次序

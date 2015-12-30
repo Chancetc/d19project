@@ -2,9 +2,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from d19app.models import CTRUser
+from d19app.models import CTRecordModel
+from d19app.models import CTRecordPoint
 
 import random
 import json
+import time
 
 # Create your views here.
 def my_login(request):
@@ -15,10 +18,26 @@ def my_login(request):
 	user.password = "123456"
 	user.save()
 
+	record = CTRecordModel()
+	record.recordTag = "comic"
+	record.user = user
+	record.save()
+
+	point = CTRecordPoint()
+	point.fatherRecord = record
+	point.key = "operation"
+	point.timestamp = str(time.time())
+	point.index = 0
+	point.save()
+
 	#db get
 	users = CTRUser.objects.all().order_by("-userId")[:10]
+
+	records = CTRecordModel.objects.all().order_by("-recordDate")[:10]
+
+	points = CTRecordPoint.objects.all().order_by("-timestamp")[:10]
 	
-	name_dict = {'twz': 'Love python and Django', 'zqxt': 'I am teaching Django','users':users[0].userName+str(users[0].userId)}
+	name_dict = {'user': users[0].userName+str(users[0].userId), 'record': records[0].recordTag+str(records[0].recordId),'operation':points[0].key+str(points[0].pointId)}
 	return HttpResponse(json.dumps(name_dict), content_type='application/json')
 
 def index(request):

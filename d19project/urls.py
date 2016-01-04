@@ -29,6 +29,8 @@ urlpatterns = [
 
     url(r'^my_login',views.my_login,name='my_login'),
 
+    url(r'^uploadRecords',views.uploadRecords,name='uploadRecords'),
+
     url(r'^static/(?P<path>.*)$',serve,{ 'document_root': settings.STATIC_URL }),
 
 

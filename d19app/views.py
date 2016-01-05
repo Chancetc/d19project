@@ -52,7 +52,26 @@ def highChartDemo(request):
 	return render(request,'stackedBarChartTest.html',{'chartData':chartData})
 
 def uploadRecords(request):
-	valueList = request.POST['records']
-	return HttpResponse(valueList, content_type = 'application/json')
+	if request.method == 'POST':
+		if request.POST.has_key('records'):
+			valueList = request.POST['records']
+			if len(valueList) > 0:
+				return HttpResponse(json.dumps(ResponseUtil.onResponse(0,valueList,'ha')), content_type = 'application/json')
+			else :
+				return HttpResponse("list is nil", content_type = 'application/json')
+		else :
+			return HttpResponse("records is required", content_type = 'application/json')
+	else :
+		return HttpResponse("ONLY FOR POST", content_type = 'application/json')
 
+class ResponseUtil(object):
+	"""docstring for ResponseUtil"""
+	def __init__(self, arg):
+		super(ResponseUtil, self).__init__()
+		self.arg = arg
+
+	@staticmethod
+	def onResponse(retCode,data,msg):
+		return {"retCode":retCode,"data":data,"msg":msg}
+		
 

@@ -1,13 +1,15 @@
 #coding:utf-8
 from django.shortcuts import render
-from django.http import HttpResponse
 from d19app.models import CTRUser
 from d19app.models import CTRecordModel
 from d19app.models import CTRecordPoint
+from d19app.HTTPUtil import HTTPRSPCode
+from d19app.HTTPUtil import ResponseUtil
+from django.http import HttpResponse
 
 import random
-import json
 import time
+import json
 
 # Create your views here.
 def my_login(request):
@@ -52,26 +54,26 @@ def highChartDemo(request):
 	return render(request,'stackedBarChartTest.html',{'chartData':chartData})
 
 def uploadRecords(request):
+
+	retCode = HTTPRSPCode.OK
+	msg = "ok"
+	data = {}
+
 	if request.method == 'POST':
 		if request.POST.has_key('records'):
 			valueList = request.POST['records']
 			if len(valueList) > 0:
-				return HttpResponse(json.dumps(ResponseUtil.onResponse(0,valueList,'ha')), content_type = 'application/json')
+				data = valueList
 			else :
-				return HttpResponse("list is nil", content_type = 'application/json')
+				retCode = HTTPRSPCode.INVALID_PARAMS
+				msg = "list is nil"
 		else :
-			return HttpResponse("records is required", content_type = 'application/json')
+			retCode = HTTPRSPCode.INVALID_PARAMS
+			msg = "records is required"
 	else :
-		return HttpResponse("ONLY FOR POST", content_type = 'application/json')
+		retCode = HTTPRSPCode.INVALID_FUNCTION
+		msg = "POST REQUIED"
 
-class ResponseUtil(object):
-	"""docstring for ResponseUtil"""
-	def __init__(self, arg):
-		super(ResponseUtil, self).__init__()
-		self.arg = arg
+	return ResponseUtil.onJsonResonse(retCode,data,msg)
 
-	@staticmethod
-	def onResponse(retCode,data,msg):
-		return {"retCode":retCode,"data":data,"msg":msg}
-		
 

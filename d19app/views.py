@@ -57,19 +57,19 @@ def uploadRecords(request):
 
 	retCode = HTTPRSPCode.OK
 	msg = "ok"
-	data = {}
+	data = []
 
 	if request.method == 'POST':
-		if request.POST.has_key('records'):
-			valueList = request.POST['records']
-			if len(valueList) > 0:
-				data = valueList
-			else :
-				retCode = HTTPRSPCode.INVALID_PARAMS
-				msg = "list is nil"
+		req = json.loads(request.body)
+		print req
+
+		valueList = req['records']
+		print valueList
+		if len(valueList) > 0:
+			data = valueList
 		else :
 			retCode = HTTPRSPCode.INVALID_PARAMS
-			msg = "records is required"
+			msg = "list is nil"
 	else :
 		retCode = HTTPRSPCode.INVALID_FUNCTION
 		msg = "POST REQUIED"

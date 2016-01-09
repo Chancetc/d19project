@@ -63,17 +63,28 @@ def uploadRecords(request):
 		req = json.loads(request.body)
 		print req
 
-		valueList = req['records']
-		print valueList
-		if len(valueList) > 0:
-			data = valueList
-		else :
+		if not (req.has_key('userName') and req.has_key('records')):
 			retCode = HTTPRSPCode.INVALID_PARAMS
-			msg = "list is nil"
+			msg = "userName and records requird"
+		else :
+			userName = req['userName']
+			records = req['records']
+			#user = CTRUser.objects.get_or_create(userName=userName)[0]
+			retCode,msg = saveRecordsByData(userName,records)
+			if len(records) > 0:
+				data = records
 	else :
 		retCode = HTTPRSPCode.INVALID_FUNCTION
 		msg = "POST REQUIED"
 
 	return ResponseUtil.onJsonResonse(retCode,data,msg)
 
+def saveRecordsByData(userName, records):
 
+	if not userName or not records:
+		return HTTPRSPCode.INVALID_PARAMS,"userName and records required"
+	else :
+		#user,created = CTRUser.objects.get_or_create(userName=userName)
+		#record = CTRecordModel()
+		#record.user = user;
+	return 1,"success"

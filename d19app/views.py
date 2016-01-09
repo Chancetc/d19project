@@ -14,24 +14,6 @@ import json
 # Create your views here.
 def my_login(request):
 
-	#db save
-	user = CTRUser()
-	user.userName = "test"
-	user.password = "123456"
-	user.save()
-
-	record = CTRecordModel()
-	record.recordTag = "comic"
-	record.user = user
-	record.save()
-
-	point = CTRecordPoint()
-	point.fatherRecord = record
-	point.key = "operation"
-	point.timestamp = str(time.time())
-	point.index = 0
-	point.save()
-
 	#db get
 	users = CTRUser.objects.all().order_by("-userId")[:10]
 
@@ -39,7 +21,7 @@ def my_login(request):
 
 	points = CTRecordPoint.objects.all().order_by("-timestamp")[:10]
 	
-	name_dict = {'user': users[0].userName+str(users[0].userId), 'record': records[0].recordTag+str(records[0].recordId),'operation':points[0].key+str(points[0].pointId)}
+	name_dict = {'user': users[0].userName+str(users[0].userId), 'record': records[0].recordTag+str(records[0].recordId)+str(records[0].recordDate),'operation':points[0].key+str(points[0].pointId)+str(points[0].timestamp)}
 	return HttpResponse(json.dumps(name_dict), content_type='application/json')
 
 def index(request):
@@ -62,7 +44,6 @@ def uploadRecords(request):
 	if request.method == 'POST':
 		req = json.loads(request.body)
 		print req
-
 		if not (req.has_key('userName') and req.has_key('records')):
 			retCode = HTTPRSPCode.INVALID_PARAMS
 			msg = "userName and records requird"
@@ -81,10 +62,37 @@ def uploadRecords(request):
 
 def saveRecordsByData(userName, records):
 
+	errCode = HTTPRSPCode.OK
+	errMsg = "ok"
+
 	if not userName or not records:
-		return HTTPRSPCode.INVALID_PARAMS,"userName and records required"
+		errCode = HTTPRSPCode.INVALID_PARAMS
+		errMsg = "userName and records required"
 	else :
-		#user,created = CTRUser.objects.get_or_create(userName=userName)
-		#record = CTRecordModel()
-		#record.user = user;
-	return 1,"success"
+		user,created = CTRUser.objects.get_or_create(userName=userName)
+		user.save()
+		if created:
+			print "user created:" + str(user)
+		else:
+			print "user found:" + str(user)
+		
+		for record in records:
+			if not (record.has_key('recordTag') and record.has_key('recordDate') and record.has_key('points')):
+				continue
+			recordTag = record['recordTag']
+			recordDate = record['recordDate']
+			points = record['points']
+			if recordTag == None or recordDate == None or points == None:
+				continue
+		 	tempCode,tempMsg = CTRecordModel.createAndSaveRecord(user,recordTag,recordDate,points)
+			if tempCode != 0:
+				errCode = tempCode
+				errMsg = tempMsg
+	if errCode == 0:
+		print "RECORDS SAVE TASK SUCCESS!"
+	else:
+		print "ERR AT SAIVNG TASK:" + errMsg
+
+	return errCode,errMsg
+
+

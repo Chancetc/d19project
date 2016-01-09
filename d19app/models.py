@@ -2,6 +2,9 @@
 from django.db import models
 from datetime import datetime
 from django.utils import timezone
+
+import types
+
 # Create your models here.
 
 #User表
@@ -35,11 +38,46 @@ class CTRecordModel(models.Model):
 	#userId 外键
 	user = models.ForeignKey(CTRUser)
 	#recordDate
-	recordDate = models.DateTimeField(default = timezone.now)
+	recordDate = models.CharField(max_length = 128, default = '0.0')
 
 	def __unicode__(self):
-		return self.recordTag + str(self.recordId)
+		return self.recordTag + str(self.recordId) + str(self.recordDate)
 
+	@staticmethod
+	def createAndSaveRecord(user,recordTag,recordDate,points):
+
+		errCode = 0
+		errMsg = ""
+		if type(recordDate) is not types.StringType and type(recordDate) is not types.UnicodeType:
+			errMsg = "recordDate type of"+str(type(recordDate))+" should be string type"
+			errCode = -1 
+			print "err at creating record:"+errMsg
+			return errCode,errMsg
+		record = CTRecordModel()
+		record.recordTag = recordTag
+		record.user = user
+		record.recordDate= recordDate
+		for point in points:
+			if not (point.has_key('key') and point.has_key('timestamp') and point.has_key('index')):
+				continue
+			key = point['key']
+			timestamp = point['timestamp']
+			index = point['index']
+			if key == None or timestamp == None or index == None:
+				continue
+			
+			record.save()
+			tempCode,tempMsg = CTRecordPoint.createAndSavePoint(record,timestamp,key,index)
+			if tempCode != 0:
+				errCode = tempCode
+				errMsg = tempMsg
+
+		if errCode == 0:
+			print "record created:" + str(record)
+		else:
+			print "err at creating record:"+errMsg
+		
+		return errCode,errMsg
 
 #CTRecordPoint
 class CTRecordPoint(models.Model):
@@ -56,6 +94,26 @@ class CTRecordPoint(models.Model):
 	index = models.IntegerField(default = 0)
 
 	def __unicode__(self):
-		return self.key + str(self.pointId)
+		return self.key + str(self.pointId) + str(self.timestamp)
 
+	@staticmethod
+	def createAndSavePoint(fatherRecord,timestamp,key,index):
+
+		errCode = 0
+		errMsg = ""
+		if type(timestamp) is not types.StringType and type(timestamp) is not types.UnicodeType:
+			errMsg = "timestamp type of:" +str(type(timestamp)) +" should be string type"
+			errCode = -1 
+			return errCode,errMsg
+		point = CTRecordPoint()
+		point.fatherRecord = fatherRecord
+		point.timestamp = timestamp
+		point.key = key
+		point.index = index
+		point.save()
+		if errCode == 0:
+			print "point created:" + str(point)
+		else:
+			print "err at creating point:"+errMsg
+		return errCode,errMsg
 

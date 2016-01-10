@@ -1,0 +1,36 @@
+
+body { 
+	padding-top: 70px;
+	padding-bottom: 50px;
+}
+h1{
+	text-align: center;
+}
+
+.large_block{
+
+	text-align: center;
+	width: 100%;
+	height: 900px;
+	padding-top: 200px;
+}
+
+.navbar_common{
+
+	padding-left: 2%;
+	padding-right: 2%;
+}
+
+.navbar-form_common{
+
+	margin: 0;
+	padding-top: 10px;
+    padding-bottom: 10px;
+    width: 30%;
+}
+
+.nav-input-group-common,
+.nav-form-control-common{
+
+	width: 100%;
+}

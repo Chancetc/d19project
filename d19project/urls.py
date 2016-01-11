@@ -31,6 +31,8 @@ urlpatterns = [
 
     url(r'^login',views.login,name='login'),
 
+    url(r'^signInByAction',views.signInByAction,name='signInByAction'),
+
     url(r'^uploadRecords',views.uploadRecords,name='uploadRecords'),
 
     url(r'^static/(?P<path>.*)$',serve,{ 'document_root': settings.STATIC_URL }),

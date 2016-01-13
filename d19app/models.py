@@ -41,7 +41,7 @@ class CTRecordModel(models.Model):
 	recordDate = models.CharField(max_length = 128, default = '0.0')
 
 	def __unicode__(self):
-		return self.recordTag + str(self.recordId) + str(self.recordDate)
+		return self.recordTag + str(self.recordId) +"_"+ str(self.recordDate)
 
 	@staticmethod
 	def createAndSaveRecord(user,recordTag,recordDate,points):

@@ -1,8 +1,23 @@
 <!DOCTYPE html>
 <html>
- <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
         <title>Highcharts Example</title>
+
+        <!-- Bootstrap -->
+        <link href="static/libs/bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="static/css/ctrcommenstyle.css">
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
 
         <script type="text/javascript" src="static/js/jquery.min.js"></script>
         <script type="text/javascript">
@@ -12,15 +27,15 @@
                         type: 'bar'
                     },
                     title: {
-                        text: 'Stacked bar chart'
+                        text: '耗时统计'
                     },
                     xAxis: {
-                        categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+                        categories: ['第一次', '第二次', '第三次', '第四次', '第五次', '第六次', '第七次', '第八次', '第九次', '第十次' ]
                     },
                     yAxis: {
                         min: 0,
                         title: {
-                            text: 'Total fruit consumption'
+                            text: '耗时(ms)'
                         }
                     },
                     legend: {
@@ -40,6 +55,9 @@
     </head>
 
 <body>
+
+{% include 'CTRNavBar.html' %}
+
 <script src="static/libs/Highcharts-4.2.1/js/highcharts.js"></script>
 <script src="static/libs/Highcharts-4.2.1/js/modules/exporting.js"></script>
 

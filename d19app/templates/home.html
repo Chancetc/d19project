@@ -20,21 +20,62 @@
   </head>
   <body>
   	{% include 'CTRNavBar.html' %}
-    <div class="large_block lead">hello world！{{name}}</div>
     <div class="container">
+
     	<div class="row" role = "main">
+        <h2>2016-01-15</h2>
     		<div class="col-md-5">
-    			left
+          <ul class="record-date-ul">
+            <li>Record1: TAG:COMIC date 2016-01-15 10:40:12</li>
+            <li>Record2: TAG:COMIC date 2016-01-15 09:50:12</li>
+            <li>Record3: TAG:COMIC date 2016-01-15 09:40:12</li>
+            <li>Record4: TAG:COMIC date 2016-01-15 09:30:12</li>
+            <li>Record5: TAG:COMIC date 2016-01-15 09:20:12</li>
+            <li>Record6: TAG:COMIC date 2016-01-15 09:10:12</li>
+            <li>Record7: TAG:COMIC date 2016-01-15 08:40:12</li>
+            <li>Record8: TAG:COMIC date 2016-01-15 08:30:12</li>
+            <li>Record9: TAG:COMIC date 2016-01-15 08:20:12</li>
+            <li>Record10: TAG:COMIC date 2016-01-15 07:40:12</li>
+          </ul>
     		</div>
     		<div class="col-md-7">
-    			right
+    			<div id="chart-container1" class="chart-container" value = "{{chartData|safe}}"></div>
     		</div>
     	</div>
+
+
+      <div class="row char-row" role = "main">
+        <h2>2016-01-14</h2>
+        <div class="col-md-5">
+          <ul class="record-date-ul">
+            <li>Record1: TAG:COMIC date 2016-01-14 10:40:12</li>
+            <li>Record2: TAG:COMIC date 2016-01-14 09:50:12</li>
+            <li>Record3: TAG:COMIC date 2016-01-14 09:40:12</li>
+            <li>Record4: TAG:COMIC date 2016-01-14 09:30:12</li>
+            <li>Record5: TAG:COMIC date 2016-01-14 09:20:12</li>
+            <li>Record6: TAG:COMIC date 2016-01-14 09:10:12</li>
+            <li>Record7: TAG:COMIC date 2016-01-14 08:40:12</li>
+            <li>Record8: TAG:COMIC date 2016-01-14 08:30:12</li>
+            <li>Record9: TAG:COMIC date 2016-01-14 08:20:12</li>
+            <li>Record10: TAG:COMIC date 2016-01-14 07:40:12</li>
+          </ul>
+        </div>
+        <div class="col-md-7">
+          <div id="chart-container2" class="chart-container" value = "{{chartData|safe}}"></div>
+        </div>
+      </div>
+
+
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="static/js/jquery-1.12.0.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="static/libs/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="static/js/highChartStackBar.js"> </script>
+
+    <script src="static/libs/Highcharts-4.2.1/js/highcharts.js"></script>
+    <script src="static/libs/Highcharts-4.2.1/js/modules/exporting.js"></script>
+
   </body>
 </html>

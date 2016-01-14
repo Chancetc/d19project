@@ -46,9 +46,36 @@ def index(request):
 def home(request):
 
 
-	name = getUserNameFromSession(request.session)
+	userName = getUserNameFromSession(request.session)
 
-	return render(request,'home.html',{'name':name})
+	if userName == None:
+		return login(request)
+
+
+	#获取当前对象
+	print userName
+	#TODO: 查询不到会崩溃
+
+	users = CTRUser.objects.filter(userName = userName)
+
+
+	if len(users) == 0:
+		return HttpResponse(u"user not exist!")
+	user = users[0]
+
+
+	#取出当前对象对应的最近10条记录 按记录时间排序
+
+	records = CTRecordModel.objects.filter(user = user).order_by("-recordDate")[:10]
+
+	print records
+
+	if records == None or len(records) == 0:
+		return HttpResponse(u'do not have any record!');
+
+	chartData = getHighChartDataFromRecords(records)
+
+	return render(request,'home.html',{'chartData':chartData})
 
 def highChartDemo(request):
 

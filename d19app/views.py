@@ -93,7 +93,7 @@ def highChartDemo(request):
 
 
 	if len(users) == 0:
-		return HttpResponse(u"user not exist!")
+		return login(request)
 	user = users[0]
 
 

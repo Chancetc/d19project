@@ -36,7 +36,7 @@ def signInByAction(request):
 	name = getPostParamFromRequest(request,'username')
 	
 	setUserNameToSession(request.session,name)
-
+	print "set name:" + name + "to session success"
 	return home(request)
 
 
@@ -45,21 +45,22 @@ def index(request):
 
 def home(request):
 
-
 	userName = getUserNameFromSession(request.session)
 
 	if userName == None:
+		print "session without userName"
 		return login(request)
 
 
 	#获取当前对象
-	print userName
+	print "get name form session:" + userName
 	#TODO: 查询不到会崩溃
 
 	users = CTRUser.objects.filter(userName = userName)
 
 
 	if len(users) == 0:
+		print "db without userName:" + userName
 		return login(request)
 	user = users[0]
 
@@ -73,9 +74,10 @@ def home(request):
 	if records == None or len(records) == 0:
 		return HttpResponse(u'do not have any record!');
 
-	chartData = getHighChartDataFromRecords(records)
+	chartData,firstDate,dateList,tag= getHighChartDataFromRecords(records)
 
-	return render(request,'home.html',{'chartData':chartData})
+	print "\nchartData:" + chartData + "\nfirstDate:" + firstDate + "\ndateList:" + str(dateList) + "\ntag:" + tag
+	return render(request,'home.html',{'chartData':chartData,'firstDate':firstDate,'dateList':dateList,'tag':tag})
 
 def highChartDemo(request):
 
@@ -219,8 +221,10 @@ def getHighChartDataFromRecords(records):
 	timesArr = []
 	standardKeys = ''
 	standardKeyArr = []
+	dateList = []
 
 	for record in records:
+
 		points = CTRecordPoint.objects.filter(fatherRecord = record).order_by("index")
 
 		if points == None or len(points) == 0 :
@@ -255,10 +259,13 @@ def getHighChartDataFromRecords(records):
 		thisKeys = "_".join(keys)
 
 		#去掉不合群的记录
+		print "\nstandardKeyArr: " + standardKeys + "currentKeys: " + thisKeys
 		if thisKeys == standardKeys:
 			times.reverse()
 			timesArr.append(times)
-		
+			dateList.append(getDateStrFromTimeInterval(float(record.recordDate)/1000.0))
+		else :
+			print "this key IS not equal to standard key!"
 
 
 	resultStr = "["
@@ -283,5 +290,17 @@ def getHighChartDataFromRecords(records):
 	#[{name: 'John',data: [5, 3, 4, 7, 2]},{name: 'Jane',data: [2, 2, 3, 2, 1]},{name: 'Joe',data: [3, 4, 4, 2, 5]}]
 
 
-	return resultStr
+	return resultStr,getDateDayStrFromTimeInterval(float(records[0].recordDate)/1000.0),dateList,records[0].recordTag
 
+def getDateStrFromTimeInterval(timeInterval):
+
+	timeArray = time.localtime(timeInterval)
+	dateStr = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+	dateStr = dateStr + " ("+ str(timeInterval) + ")"
+	return dateStr
+
+def getDateDayStrFromTimeInterval(timeInterval):
+
+	timeArray = time.localtime(timeInterval)
+	dateStr = time.strftime("%Y-%m-%d", timeArray)
+	return dateStr

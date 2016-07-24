@@ -23,19 +23,12 @@
     <div class="container">
 
     	<div class="row" role = "main">
-        <h2>2016-01-15 测试时间</h2>
+        <h2>日期: {{firstDate}}</h2>
     		<div class="col-md-5">
           <ul class="record-date-ul">
-            <li>Record1: TAG:COMIC date 2016-01-15 10:40:12</li>
-            <li>Record2: TAG:COMIC date 2016-01-15 09:50:12</li>
-            <li>Record3: TAG:COMIC date 2016-01-15 09:40:12</li>
-            <li>Record4: TAG:COMIC date 2016-01-15 09:30:12</li>
-            <li>Record5: TAG:COMIC date 2016-01-15 09:20:12</li>
-            <li>Record6: TAG:COMIC date 2016-01-15 09:10:12</li>
-            <li>Record7: TAG:COMIC date 2016-01-15 08:40:12</li>
-            <li>Record8: TAG:COMIC date 2016-01-15 08:30:12</li>
-            <li>Record9: TAG:COMIC date 2016-01-15 08:20:12</li>
-            <li>Record10: TAG:COMIC date 2016-01-15 07:40:12</li>
+            {% for item in dateList %}
+              <li>Record {{forloop.counter}}: tag:{{tag}} date: {{item}}</li>
+            {% endfor %}
           </ul>
     		</div>
     		<div class="col-md-7">
@@ -45,19 +38,12 @@
 
 
       <div class="row char-row" role = "main">
-        <h2>2016-01-14 测试时间</h2>
+        <h2>日期: {{firstDate}}</h2>
         <div class="col-md-5">
           <ul class="record-date-ul">
-            <li>Record1: TAG:COMIC date 2016-01-14 10:40:12</li>
-            <li>Record2: TAG:COMIC date 2016-01-14 09:50:12</li>
-            <li>Record3: TAG:COMIC date 2016-01-14 09:40:12</li>
-            <li>Record4: TAG:COMIC date 2016-01-14 09:30:12</li>
-            <li>Record5: TAG:COMIC date 2016-01-14 09:20:12</li>
-            <li>Record6: TAG:COMIC date 2016-01-14 09:10:12</li>
-            <li>Record7: TAG:COMIC date 2016-01-14 08:40:12</li>
-            <li>Record8: TAG:COMIC date 2016-01-14 08:30:12</li>
-            <li>Record9: TAG:COMIC date 2016-01-14 08:20:12</li>
-            <li>Record10: TAG:COMIC date 2016-01-14 07:40:12</li>
+            {% for item in dateList %}
+              <li>Record {{forloop.counter}}: tag:{{tag}} date: {{item}}</li>
+            {% endfor %}
           </ul>
         </div>
         <div class="col-md-7">

@@ -235,6 +235,9 @@ def getHighChartDataFromRecords(records):
 
 		keys = []
 		times = []
+		print "\n##############################"
+		print points
+		print "##############################"
 		#创建 key数组和时间数组
 		for point in points:
 			
@@ -251,15 +254,16 @@ def getHighChartDataFromRecords(records):
 			keys.append(key)
 			times.append(time)
 
+		thisKeys = "_".join(keys)
 		if standardKeys == '':
 			standardKeys = "_".join(keys)
 			standardKeyArr = keys
 			standardKeyArr.reverse()
 
-		thisKeys = "_".join(keys)
+		
 
 		#去掉不合群的记录
-		print "\nstandardKeyArr: " + standardKeys + "currentKeys: " + thisKeys
+		print "standardKeys: " + standardKeys + "\ncurrentKeys: " + thisKeys
 		if thisKeys == standardKeys:
 			times.reverse()
 			timesArr.append(times)
@@ -289,7 +293,7 @@ def getHighChartDataFromRecords(records):
 
 	#[{name: 'John',data: [5, 3, 4, 7, 2]},{name: 'Jane',data: [2, 2, 3, 2, 1]},{name: 'Joe',data: [3, 4, 4, 2, 5]}]
 
-
+	print "\nresult of getHighChartDataFromRecords:" + resultStr
 	return resultStr,getDateDayStrFromTimeInterval(float(records[0].recordDate)/1000.0),dateList,records[0].recordTag
 
 def getDateStrFromTimeInterval(timeInterval):

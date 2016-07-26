@@ -31,10 +31,39 @@ def my_login(request):
 	name_dict = {'req':req,'user': users[0].userName+str(users[0].userId), 'record': records[0].recordTag+str(records[0].recordId)+str(records[0].recordDate),'operation':points[0].key+str(points[0].pointId)+str(points[0].timestamp)}
 	return HttpResponse(json.dumps(name_dict), content_type='application/json')
 
+def signInByAjaxAction(request):
+
+	retCode = HTTPRSPCode.OK
+	msg = "ok"
+	data = {}
+	userName = getPostParamFromRequest(request,'username')
+	password = getPostParamFromRequest(request,'password')
+
+	if userName == None:
+		msg = "username must not be nil"
+		retCode = HTTPRSPCode.INVALID_USERNAME
+	else :
+		users = CTRUser.objects.filter(userName = userName)
+		if len(users) == 0:
+			msg = "there is no data for user:" + userName
+			retCode = HTTPRSPCode.INVALID_PARAMS
+			#success!
+		else :
+			print "request.META['HTTP_ORIGIN']:" + str(request.META['HTTP_ORIGIN'])
+			data = {'user':str(users[0]),'url':request.META['HTTP_ORIGIN'] }
+			setUserNameToSession(request.session,userName)
+			print "set name:" + userName + "to session success"
+	return ResponseUtil.onJsonResponse(retCode,data,msg)
+
 def signInByAction(request):
 	
 	name = getPostParamFromRequest(request,'username')
-	
+	# users = CTRUser.objects.filter(userName = name)
+
+	# if len(users) == 0:
+	# 	print "db without userName:" + name
+	# 	return HttpResponse(u"there is no data for user:" + name)
+
 	setUserNameToSession(request.session,name)
 	print "set name:" + name + "to session success"
 	return home(request)
@@ -143,7 +172,7 @@ def uploadRecords(request):
 		retCode = HTTPRSPCode.INVALID_FUNCTION
 		msg = "POST REQUIED"
 
-	return ResponseUtil.onJsonResonse(retCode,data,msg)
+	return ResponseUtil.onJsonResponse(retCode,data,msg)
 
 
 #util -------------------------------

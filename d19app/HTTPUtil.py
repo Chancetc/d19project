@@ -37,6 +37,6 @@ class ResponseUtil(object):
 		return {"msg":msg,"data":data,"retCode":retCode}
 
 	@staticmethod
-	def onJsonResonse(retCode,data,msg):
+	def onJsonResponse(retCode,data,msg):
 		return HttpResponse(json.dumps(ResponseUtil.onResponse(retCode,data,msg)), content_type = 'application/json')
 		

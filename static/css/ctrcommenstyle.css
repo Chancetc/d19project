@@ -35,11 +35,18 @@ h1{
 	width: 100%;
 }
 
+#login-alert{
+
+	position: absolute;
+	width: 100%;
+	z-index: 100;
+}
 .login-container{
 
 	width: 100%;
 	height: auto;
 	min-height: 1px;
+	padding-top: 80px;
 }
 .loginPanel{
 

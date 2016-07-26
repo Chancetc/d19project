@@ -10,7 +10,13 @@
     <!-- Bootstrap -->
     <link href="static/libs/bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/css/ctrcommenstyle.css">
-
+    
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="static/js/jquery-1.12.0.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="static/libs/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="static/js/ctr_login.js"> </script>
+    
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -21,30 +27,29 @@
 <body class="login-body">
 	{% include 'CTRNavBar.html' %}
 	
+  <div id="login-alert" class="alert alert-warning alert-dismissible" role="alert" style="display: none">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong><span id="login-alert-tip">Warning!</span></strong> <span id="login-alert-content"></span>
+  </div>
+
 	<div class="login-container">
-		<form id="login-form" class="loginPanel login-form" action="/signInByAction" method="POST"> 
+		<form id="login-form" class="loginPanel login-form"> 
     	<div class="input-group">
     		<span class="input-group-addon" id="sizing-addon1">@</span>
-  			<input type="text" class="form-control" name="username" value="" placeholder="Username" aria-describedby="sizing-addon1" required autofocus>
+  			<input  onkeyup="loginInputKeyUp(event)" id="username-login-input" type="text" class="form-control" name="username" value="" placeholder="Username" aria-describedby="sizing-addon1" required autofocus>
     	</div><!-- /input-group -->
 
     	<div class="input-group pwd-input">
 
   			<span class="input-group-addon" id="sizing-addon2">@</span>
-  			<input type="password" class="form-control" placeholder="Password(not requied)" aria-describedby="sizing-addon1" name="password" value="">
+  			<input onkeyup="loginInputKeyUp(event)" id="username-password-input" type="password" class="form-control" placeholder="Password(not requied)" aria-describedby="sizing-addon1" name="password" value="">
     	</div><!-- /input-group -->
 
 		<div class="input-group login-input">	
-			<input class="login-btn" type="submit" name="submit" value="Sign in">
+			<input id="login-btn" class="login-btn" type="button" name="submit" value="Sign in">
 		</div>
   		</form><!-- /.col-lg-6 -->
 	</div>
-	
-
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="static/js/jquery-1.12.0.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="static/libs/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
     
 </body>
 </html>

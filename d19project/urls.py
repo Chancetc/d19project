@@ -35,6 +35,8 @@ urlpatterns = [
 
     url(r'^uploadRecords',views.uploadRecords,name='uploadRecords'),
 
+    url(r'^signInByAjaxAction',views.signInByAjaxAction,name='signInByAjaxAction'),
+    
     url(r'^static/(?P<path>.*)$',serve,{ 'document_root': settings.STATIC_URL }),
 
 

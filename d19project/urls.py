@@ -39,6 +39,5 @@ urlpatterns = [
     
     url(r'^static/(?P<path>.*)$',serve,{ 'document_root': settings.STATIC_URL }),
 
-
     url(r'^admin/', admin.site.urls),
 ]

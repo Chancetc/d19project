@@ -68,10 +68,6 @@ def signInByAction(request):
 	print "set name:" + name + "to session success"
 	return home(request)
 
-
-def index(request):
-	return HttpResponse(u"Hello World! This is CTRecorder!")
-
 def home(request):
 
 	userName = getUserNameFromSession(request.session)
@@ -337,3 +333,9 @@ def getDateDayStrFromTimeInterval(timeInterval):
 	timeArray = time.localtime(timeInterval)
 	dateStr = time.strftime("%Y-%m-%d", timeArray)
 	return dateStr
+
+# interface for ajax request
+
+def queryRecords(userId,tag,recordDate,start,end):
+
+	return [];

@@ -58,10 +58,29 @@
 
 {% include 'CTRNavBar.html' %}
 
+<h1>{{tag}}</h1>
+<h2>日期: {{firstDate}}</h2>       
+
+<!-- <div id="container" class="chart-container"></div> -->
+
+<div id="chart-container1" class="chart-container" value = "{{chartData|safe}}"></div>
+
+<div class="col-md-10">
+    <ul class="record-date-ul">
+    {% for item in dateList %}
+        <li>Record {{forloop.counter}}: tag:{{tag}} date: {{item}}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+</body>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="static/js/jquery-1.12.0.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="static/libs/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="static/js/highChartStackBar.js"> </script>
+
 <script src="static/libs/Highcharts-4.2.1/js/highcharts.js"></script>
 <script src="static/libs/Highcharts-4.2.1/js/modules/exporting.js"></script>
 
-<div id="container" class="chart-container"></div>
-
-</body>
 </html>

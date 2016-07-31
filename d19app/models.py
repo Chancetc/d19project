@@ -25,7 +25,7 @@ class CTRUser(models.Model):
 	lastLoginDate = models.DateTimeField(default = timezone.now, blank = True, null = True)
 
 	def __unicode__(self):
-		return self.userName
+		return str(self.userId) +" "+ self.userName;
 		
 
 #CTRModel表:单条记录

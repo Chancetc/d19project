@@ -17,19 +17,24 @@
 
 	<form class="navbar-form navbar-left navbar-form_common" role="search" action="/highChartDemo">
         <div class="form-group input-group-sm nav-input-group-common">
-          <input type="text" class="form-control nav-form-control-common" placeholder="Search By Tag">
+          <input type="text" class="form-control nav-form-control-common" placeholder="Search By Tag" name="tag">
         </div>
       </form>
 
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">你好  {{request.session.userName}} <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+          {% if request.session.userName %}你好  {{request.session.userName}} 
+          {% else %} 
+          未登录
+          {% endif %}
+          <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#">Setting</a></li>
             <li><a href="/login">Logout</a></li>
             <li><a href="#">Switch Account</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">My tags</a></li>
+            <li id="all-tag-btn"><a href="/my-tags">My tags</a></li>
           </ul>
         </li>
       </ul>

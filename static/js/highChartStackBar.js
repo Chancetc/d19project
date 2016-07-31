@@ -1,6 +1,11 @@
 $(document).ready(function(){
 
 
+    // 登录按钮
+    $("#all-tag-btn").click(function(){
+        // showAllMyTags()
+    });
+
 	var high = {
                     chart: {
                         type: 'bar'
@@ -31,3 +36,16 @@ $(document).ready(function(){
     $('#chart-container1').highcharts(high);
     $('#chart-container2').highcharts(high);
 });
+
+function showAllMyTags(){
+
+    $.post("/queryRequetForAllRecorderTags",{
+
+  },function(data,status){
+    if (data.retCode != 0) {
+      alert(data.msg);
+    }else{
+      console.log(data.data);
+    }
+  });
+}

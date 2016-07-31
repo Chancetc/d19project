@@ -22,6 +22,7 @@ function signInAccount(){
     }else{
       url = data.data.url
       console.log("url from server is:"+url)
+      console.log("userData: "+data.data.user)
       window.location.href = url
     }
   });

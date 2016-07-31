@@ -12,6 +12,7 @@ class HTTPRSPCode(object):
 	INVALID_FUNCTION	=		-4
 	FOBIDDEN_VISIT		=		-5
 	OUT_OF_DATE			=		-6
+	NOT_LOGIN			=		-7
 
 
 
@@ -23,6 +24,7 @@ assert HTTPRSPCode.INVALID_PWD 					== -3
 assert HTTPRSPCode.INVALID_FUNCTION				== -4
 assert HTTPRSPCode.FOBIDDEN_VISIT 				== -5
 assert HTTPRSPCode.OUT_OF_DATE 					== -6
+assert HTTPRSPCode.NOT_LOGIN 					== -7
 
 
 

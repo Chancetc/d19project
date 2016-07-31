@@ -36,6 +36,10 @@ urlpatterns = [
     url(r'^uploadRecords',views.uploadRecords,name='uploadRecords'),
 
     url(r'^signInByAjaxAction',views.signInByAjaxAction,name='signInByAjaxAction'),
+
+    url(r'^my-tags',views.my_tags,name='my_tags'),
+    
+    url(r'^queryRequetForAllRecorderTags',views.queryRequetForAllRecorderTags,name='queryRequetForAllRecorderTags'),
     
     url(r'^static/(?P<path>.*)$',serve,{ 'document_root': settings.STATIC_URL }),
 

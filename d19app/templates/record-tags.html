@@ -10,7 +10,7 @@
   <!-- Bootstrap -->
   <link href="static/libs/bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="static/css/ctrcommenstyle.css">
-  
+  <link rel="icon" type="image/x-icon" href="static/resources/favicon.ico">
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
   <script src="static/js/jquery-1.12.0.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -28,16 +28,40 @@
   {% load filters %}
 
   <div class="container">
-    <div class="row" role = "main">
-      <div class="col-md-9">
-        <ul>
-          {% for item in records %}
-          <li style="cursor: pointer; font-size: 20px"><a style="color: #000000;text-decoration: none;" href="/records-stackedBar?tag={{item|dic_key:"recordTag"}}">tag {{forloop.counter}}:  <span style="font-size: 25px; font-weight: 900;">{{item|dic_key:"recordTag"}}</span>  last record date: {{item|dic_key:"recordDateStr"}}</a></li>
-            {% endfor %}
-        </ul>
+    <div class="panel panel-default">
+    <!-- Default panel contents -->
+      <div class="panel-heading">My Tags</div>
+      <div class="panel-body">
+      <p>这些是您使用的所有标签，按照时间顺序，最近使用排在最前。第一列表示标签名，第二列表示该标签的最后一条记录时间。点击标签行可进入对应的数据展示页。</p>
       </div>
+
+      <!-- Table -->
+      <table class="table">
+
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tag Name</th>
+            <th>Last Record Date</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for item in records %}
+          <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td><a href="/records-stackedBar?tag={{item|dic_key:"recordTag"}}">{{item|dic_key:"recordTag"}}</a></td>
+            <td>{{item|dic_key:"recordDateStr"}}</td>
+            <td>{{item|dic_key:"recordDate"}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+      
     </div>
   </div>
-  
+
 </body>
 </html>

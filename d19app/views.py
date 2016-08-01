@@ -116,7 +116,7 @@ def my_tags(request):
 		tags,queryRecords = queryAllRecorderTags(userId)
 	for i in range(len(queryRecords)):
 		print queryRecords[i]
-		item = {"recordId":queryRecords[i].recordId,"recordTag":queryRecords[i].recordTag,"user_id":queryRecords[i].user_id,"recordDate":queryRecords[i].recordDate,"recordDateStr":getDateDayStrFromTimeInterval(float(queryRecords[i].recordDate)/1000.0)}
+		item = {"recordId":queryRecords[i].recordId,"recordTag":queryRecords[i].recordTag,"user_id":queryRecords[i].user_id,"recordDate":float(queryRecords[i].recordDate)/1000.0,"recordDateStr":getDateDayStrFromTimeInterval(float(queryRecords[i].recordDate)/1000.0)}
 		resultRecords.append(item)
 	data = {'tags':tags,'records':resultRecords}
 	return render(request,'record-tags.html',data)

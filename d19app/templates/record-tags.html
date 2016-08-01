@@ -32,7 +32,7 @@
       <div class="col-md-9">
         <ul>
           {% for item in records %}
-          <li style="cursor: pointer; font-size: 20px"><a style="color: #000000" href="/highChartDemo?tag={{item|dic_key:"recordTag"}}">tag {{forloop.counter}}:  <span style="font-size: 25px; font-weight: 900;">{{item|dic_key:"recordTag"}}</span>  last record date: {{item|dic_key:"recordDateStr"}}</a></li>
+          <li style="cursor: pointer; font-size: 20px"><a style="color: #000000;text-decoration: none;" href="/records-stackedBar?tag={{item|dic_key:"recordTag"}}">tag {{forloop.counter}}:  <span style="font-size: 25px; font-weight: 900;">{{item|dic_key:"recordTag"}}</span>  last record date: {{item|dic_key:"recordDateStr"}}</a></li>
             {% endfor %}
         </ul>
       </div>

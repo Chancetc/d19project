@@ -25,7 +25,7 @@ urlpatterns = [
 
 	url(r'^$',views.home,name='home'),
 
-    url(r'^highChartDemo',views.highChartDemo,name='highChartDemo'),
+    url(r'^records-stackedBar',views.records_stackedBar,name='records_stackedBar'),
 
     url(r'^my_login',views.my_login,name='my_login'),
 

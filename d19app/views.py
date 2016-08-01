@@ -121,6 +121,10 @@ def my_tags(request):
 	data = {'tags':tags,'records':resultRecords}
 	return render(request,'record-tags.html',data)
 
+def user_help(request):
+
+	return render(request,'help.html')
+	
 def highChartDemo(request):
 
 	userId = getUserIdFromSession(request.session)

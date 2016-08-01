@@ -41,6 +41,8 @@ urlpatterns = [
     
     url(r'^queryRequetForAllRecorderTags',views.queryRequetForAllRecorderTags,name='queryRequetForAllRecorderTags'),
     
+    url(r'^help',views.user_help,name='user_help'),
+    
     url(r'^static/(?P<path>.*)$',serve,{ 'document_root': settings.STATIC_URL }),
 
     url(r'^admin/', admin.site.urls),

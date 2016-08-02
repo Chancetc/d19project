@@ -35,6 +35,8 @@ urlpatterns = [
 
     url(r'^uploadRecords',views.uploadRecords,name='uploadRecords'),
 
+    url(r'^queryRequestForUserRecords',views.queryRequestForUserRecords,name='queryRequestForUserRecords'),
+
     url(r'^signInByAjaxAction',views.signInByAjaxAction,name='signInByAjaxAction'),
 
     url(r'^my-tags',views.my_tags,name='my_tags'),

@@ -39,12 +39,14 @@ class CTRecordModel(models.Model):
 	user = models.ForeignKey(CTRUser)
 	#recordDate
 	recordDate = models.CharField(max_length = 128, default = '0.0')
+	#recordDateDayStr
+	recordDateDayStr = models.CharField(max_length = 128, default = '0000-00-00')
 
 	def __unicode__(self):
-		return self.recordTag + str(self.recordId) +"_"+ str(self.recordDate)
+		return self.recordTag + str(self.recordId) +"_"+ str(self.recordDate) + "_" + self.recordDateDayStr
 
 	@staticmethod
-	def createAndSaveRecord(user,recordTag,recordDate,points):
+	def createAndSaveRecord(user,recordTag,recordDate,recordDateDayStr,points):
 
 		errCode = 0
 		errMsg = ""
@@ -57,6 +59,8 @@ class CTRecordModel(models.Model):
 		record.recordTag = recordTag
 		record.user = user
 		record.recordDate= recordDate
+		record.recordDateDayStr = recordDateDayStr
+
 		for point in points:
 			if not (point.has_key('key') and point.has_key('timestamp') and point.has_key('index')):
 				continue

@@ -49,8 +49,12 @@ def signInByAjaxAction(request):
 			retCode = HTTPRSPCode.INVALID_PARAMS
 			#success!
 		else :
-			print "request.META['HTTP_ORIGIN']:" + str(request.META['HTTP_ORIGIN'])
-			data = {'user':str(users[0]),'url':request.META['HTTP_ORIGIN'] }
+			print request.META
+			# print "request.META['HTTP_ORIGIN']:" + str(request.META['HTTP_ORIGIN'])
+			homeUrl = str(request.META['HTTP_HOST'])
+			if not ("http" in homeUrl or "https" in homeUrl):
+				homeUrl = "http://"+homeUrl
+			data = {'userName':users[0].userName,'userId':str(users[0].userId),'url':homeUrl}
 			setUserNameToSession(request.session,userName)
 			setUserIdToSession(request.session,users[0].userId)
 			print "set name:" + userName + "to session success"
@@ -77,32 +81,16 @@ def home(request):
 		print "session without userName"
 		return login(request)
 
-
 	#获取当前对象
 	print "get name form session:" + userName
 	#TODO: 查询不到会崩溃
 
 	users = CTRUser.objects.filter(userName = userName)
 
-
 	if len(users) == 0:
 		print "db without userName:" + userName
 		return login(request)
-	user = users[0]
-
-	#取出当前对象对应的最近10条记录 按记录时间排序
-
-	records = CTRecordModel.objects.filter(user = user).order_by("-recordDate")[:10]
-
-	print records
-
-	if records == None or len(records) == 0:
-		return HttpResponse(u'do not have any record!');
-
-	chartData,firstDate,dateList,tag= getHighChartDataFromRecords(records)
-
-	print "\nchartData:" + chartData + "\nfirstDate:" + firstDate + "\ndateList:" + str(dateList) + "\ntag:" + tag
-	return render(request,'home.html',{'chartData':chartData,'firstDate':firstDate,'dateList':dateList,'tag':tag})
+	return render(request,'home.html',{'chartData':[],'firstDate':"",'dateList':[],'tag':""})
 
 def my_tags(request):
 	userId = getUserIdFromSession(request.session)
@@ -207,9 +195,10 @@ def saveRecordsByData(userName, records):
 			recordTag = record['recordTag']
 			recordDate = record['recordDate']
 			points = record['points']
+			recordDateDayStr = getDateDayStrFromTimeInterval(float(recordDate)/1000.0)
 			if recordTag == None or recordDate == None or points == None:
 				continue
-		 	tempCode,tempMsg = CTRecordModel.createAndSaveRecord(user,recordTag,recordDate,points)
+		 	tempCode,tempMsg = CTRecordModel.createAndSaveRecord(user,recordTag,recordDate,recordDateDayStr,points)
 			if tempCode != 0:
 				errCode = tempCode
 				errMsg = tempMsg
@@ -263,6 +252,9 @@ def getPostParamFromRequest(request,key):
 def getHighChartDataFromRecords(records):
 	#取出每条记录对应的所有记录点 按序号排序
 
+	print "length of oringinal"
+	print len(records)
+
 	timesArr = []
 	standardKeys = ''
 	standardKeyArr = []
@@ -305,8 +297,6 @@ def getHighChartDataFromRecords(records):
 			standardKeyArr = keys
 			standardKeyArr.reverse()
 
-		
-
 		#去掉不合群的记录
 		print "standardKeys: " + standardKeys + "\ncurrentKeys: " + thisKeys
 		if thisKeys == standardKeys:
@@ -316,9 +306,7 @@ def getHighChartDataFromRecords(records):
 		else :
 			print "this key IS not equal to standard key!"
 
-
 	resultStr = "["
-
 	resultArr = []
 
 	for keyIndex in range(len(standardKeyArr)):
@@ -334,11 +322,12 @@ def getHighChartDataFromRecords(records):
 	resultStr = "[" + ",".join(resultArr) + "]"
 
 	#for循环数组 重组
-
-
 	#[{name: 'John',data: [5, 3, 4, 7, 2]},{name: 'Jane',data: [2, 2, 3, 2, 1]},{name: 'Joe',data: [3, 4, 4, 2, 5]}]
 
 	print "\nresult of getHighChartDataFromRecords:" + resultStr
+
+	print "length of result :"
+	print len(dateList)
 	return resultStr,getDateDayStrFromTimeInterval(float(records[0].recordDate)/1000.0),dateList,records[0].recordTag
 
 def getDateStrFromTimeInterval(timeInterval):
@@ -358,7 +347,69 @@ def getDateDayStrFromTimeInterval(timeInterval):
 
 def queryRecords(userId,tag,recordDate,start,end):
 
-	return [];
+	resultData = []
+	records = []
+	if not userId or start>end or start<0:
+		return records
+	if tag and recordDate :
+		records = CTRecordModel.objects.filter(user_id = userId).filter(recordTag = tag).filter(recordDateDayStr=recordDate).order_by("-recordDate")[start:end]
+	elif tag :
+		records = CTRecordModel.objects.filter(user_id = userId).filter(recordTag = tag).order_by("-recordDate")[start:end]
+	else :
+		records = CTRecordModel.objects.filter(user_id = userId).order_by("-recordDate")[start:end]
+		# 如何分类
+	# 时间复杂度O(n)
+	tagsArr = []
+	recordDicWithTagKey = {}
+	for i in range(len(records)):
+		recordItem = records[i]
+		if not (recordItem.recordTag in tagsArr):
+			tagsArr.append(recordItem.recordTag)
+			recordDicWithTagKey[recordItem.recordTag] = [recordItem]
+		else :
+			recordDicWithTagKey[recordItem.recordTag].append(recordItem)
+	print "length"
+	print recordDicWithTagKey
+	for i in range(len(tagsArr)):
+		tag = tagsArr[i]
+		recordsBySpeTag = recordDicWithTagKey[tag]
+		tempArr =[]
+		for j in range(len(recordsBySpeTag)):
+			tempArr.append(recordsBySpeTag[j])
+			if len(tempArr)==10 or j==(len(recordsBySpeTag)-1):
+				chartData,firstDate,dateList,tag= getHighChartDataFromRecords(tempArr)
+				dataItem = {'chartData':chartData,'firstDate':firstDate,'dateList':dateList,'tag':tag}
+				resultData.append(dataItem)
+				tempArr =[]
+
+	return resultData;
+
+def queryRequestForUserRecords(request):
+	
+	retCode = HTTPRSPCode.OK
+	msg = "ok"
+	data = {}
+
+	userId = getPostParamFromRequest(request,"userId")
+	tag = getPostParamFromRequest(request,"tag")
+	recordDate = getPostParamFromRequest(request,"recordDate")
+	start = getPostParamFromRequest(request,"start")
+	end = getPostParamFromRequest(request,"end")
+
+	if not userId:
+		userId = getUserIdFromSession(request.session)
+	if not userId:
+		retCode = HTTPRSPCode.NOT_LOGIN
+		msg = "please log in first"
+		return ResponseUtil.onJsonResponse(retCode,data,msg)
+	if start>end or start<0:
+		retCode = HTTPRSPCode.INVALID_PARAMS
+		msg = "userId or start&end is valid"
+		return ResponseUtil.onJsonResponse(retCode,data,msg)
+	records = queryRecords(userId,tag,recordDate,start,end)
+	data["records"] = records;
+	data["count"] = len(records)
+	return ResponseUtil.onJsonResponse(retCode,data,msg)
 
 def queryRequetForAllRecorderTags(request):
 

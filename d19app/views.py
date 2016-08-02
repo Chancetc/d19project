@@ -386,6 +386,7 @@ def queryRecords(userId,tag,recordDate,start,end):
 
 def queryRequestForUserRecords(request):
 	
+	# time.sleep(2)
 	retCode = HTTPRSPCode.OK
 	msg = "ok"
 	data = {}

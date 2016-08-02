@@ -10,7 +10,10 @@ $(document).ready(function(){
     var chartData = getHighChartDataFromRecordData(recordData);
 
     $('#chart-container1').highcharts(chartData);
-    //取最近100条记录展示
+    
+    $('#nav-progress-bar').animate({
+        width:'60%'
+    },500);
 });
 
 function showAllMyTags(){
@@ -46,6 +49,14 @@ function loadUserRecords(tag,date,start,end){
                 alert("sorry, there is no data to show!");
             }else{
                 constructDomsWithRecordDatas(data.data["records"]);
+                $('#nav-progress-bar').animate({width:'100%'}, 100, function(){
+                    // $('#nav-progress-barCon').hide();
+                    setTimeout(function(){
+                        document.getElementById("nav-progress-barCon").style.display="none";
+                    },500);
+                    
+                });
+                
             }
         }
     });

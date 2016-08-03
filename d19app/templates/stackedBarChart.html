@@ -19,10 +19,18 @@
         <![endif]-->
 
         <script type="text/javascript" src="static/js/jquery.min.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('#nav-progress-bar').animate({
+                    width:'60%'
+                },500);
+            });
+        </script>
     </head>
 
-<body onload="loadUserRecords('{{tag}}','',0,10000)"> 
-
+<body onload="loadUserRecords('{{tag}}','',0,100000)"> 
+{% include 'progressBar-green.html' %}
 {% include 'CTRNavBar.html' %}
 
 <!-- <div id="container" class="chart-container"></div> -->

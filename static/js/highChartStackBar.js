@@ -14,6 +14,7 @@ $(document).ready(function(){
     $('#nav-progress-bar').animate({
         width:'60%'
     },500);
+    setNavItemActive("none");
 });
 
 function showAllMyTags(){
@@ -89,6 +90,17 @@ function constructDomsWithRecordDatas(recordDatas){
         $(selForChart).highcharts(chartData);
     }
 }
+
+function setNavItemActive(item){
+
+      var navStr = $("#nav-option-group").html();
+      if (item == "tag") {
+         navStr = "<li id='nav-date-item'><a href='/records-by-date'>Date</a></li><li  class='active' id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
+      }else if (item == "date"){
+        navStr = "<li class='active' id='nav-date-item'><a href='/records-by-date'>Date</a></li><li id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
+     }
+      $("#nav-option-group").html(navStr);
+  }
 
 // 根据rawdata生成图表可用的图表数据
 function getHighChartDataFromRecordData(recordData){

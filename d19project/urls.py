@@ -41,6 +41,8 @@ urlpatterns = [
 
     url(r'^my-tags',views.my_tags,name='my_tags'),
     
+    url(r'^records-by-date',views.my_dates,name='my_dates'),
+    
     url(r'^queryRequetForAllRecorderTags',views.queryRequetForAllRecorderTags,name='queryRequetForAllRecorderTags'),
     
     url(r'^help',views.user_help,name='user_help'),

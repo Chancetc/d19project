@@ -97,17 +97,34 @@ def my_tags(request):
 	tags = []
 	queryRecords = []
 	resultRecords = []
+	counts = []
 	print "my_tags :userId " + str(userId)
 	if not userId:
 		return login(request)
 	else :
-		tags,queryRecords = queryAllRecorderTags(userId)
+		tags,queryRecords,counts = queryAllRecorderTags(userId)
 	for i in range(len(queryRecords)):
 		print queryRecords[i]
-		item = {"recordId":queryRecords[i].recordId,"recordTag":queryRecords[i].recordTag,"user_id":queryRecords[i].user_id,"recordDate":float(queryRecords[i].recordDate)/1000.0,"recordDateStr":getDateDayStrFromTimeInterval(float(queryRecords[i].recordDate)/1000.0)}
+		item = {"recordId":queryRecords[i].recordId,"count":counts[i],"recordTag":queryRecords[i].recordTag,"user_id":queryRecords[i].user_id,"recordDate":float(queryRecords[i].recordDate)/1000.0,"recordDateStr":getDateDayStrFromTimeInterval(float(queryRecords[i].recordDate)/1000.0)}
 		resultRecords.append(item)
 	data = {'tags':tags,'records':resultRecords}
 	return render(request,'record-tags.html',data)
+
+def my_dates(request):
+
+	userId = getUserIdFromSession(request.session)
+	dates = []
+	tags = []
+	queryRecords = []
+	resultRecords = []
+	print "my_dates :userId " + str(userId)
+	if not userId:
+		return login(request)
+	else :
+		dates,records = queryAllRecorderDates(userId)
+
+	data = {'dates':dates,'records':records}
+	return render(request,'records-by-date.html',data)
 
 def user_help(request):
 
@@ -117,13 +134,21 @@ def records_stackedBar(request):
 
 	userId = getUserIdFromSession(request.session)
 	tag = request.GET.get("tag",'')
+	date = request.GET.get("date",'')
 	print "userId " + str(userId)
-	if not userId or not tag:
+	if not userId or (not tag and not date):
+		print "return home"
 		return home(request)
 
 	#取出当前对象对应的最近10条记录 按记录时间排序
-
-	records = CTRecordModel.objects.filter(user_id = userId).filter(recordTag = tag).order_by("-recordDate")[:100]
+	records = []
+	print "records_stackedBar"
+	if tag:
+		print "tag"+tag
+	 	records = CTRecordModel.objects.filter(user_id = userId).filter(recordTag = tag).order_by("-recordDate")[:10000]
+	elif date :
+		print "date"+date
+		records = CTRecordModel.objects.filter(user_id = userId).filter(recordDateDayStr = date).order_by("-recordDate")[:10000]
 	print records
 
 	if records == None or len(records) == 0:
@@ -133,8 +158,13 @@ def records_stackedBar(request):
 
 	print "\nchartData:" + chartData + "\nfirstDate:" + firstDate + "\ndateList:" + str(dateList) + "\ntag:" + tag
 	
+	returnData = {'chartData':chartData,'firstDate':firstDate,'dateList':dateList,'tag':tag}
+	if date:
+		returnData["date"] = date
+	print "records_stackedBar return data:"
+	print returnData
 	#chartData = u"\"[{name:'-[QQExtendTableViewControllerProvider tableView:didSelectRowAtIndexPath:]~-[QQForwardEngine ActionOpenComicCenter:]',data:[1.98,0.43,14.48,0.33,0.43,0.65,0.34,1.88,7.41,2.73]},{name:'-[QQForwardEngine ActionOpenComicCenter:]~-[QQVIPFunctionComicPortalViewController init]',data:[0.97,0.23,0.25,0.18,0.26,0.36,0.18,0.38,0.38,0.26]},{name:'-[QQVIPFunctionComicPortalViewController init]~-[QQVIPFunctionComicPortalViewController loadView]',data:[1.15,0.86,1,0.77,0.92,5.35,0.7,1.51,1.18,0.95]},{name:'-[QQVIPFunctionComicPortalViewController loadView]~-[QQVIPFunctionComicPortalViewController viewDidLoad]',data:[0.16,0.16,0.2,0.12,0.2,0.18,0.19,0.19,0.21,0.19]},{name:'-[QQVIPFunctionComicPortalViewController viewDidLoad]~QQVIPFunctionComicPortalViewController_homeVCinit',data:[0.15,0.09,0.18,0.13,0.17,0.12,0.11,0.11,0.17,0.16]},{name:'QQVIPFunctionComicPortalViewController_homeVCinit~QQVIPFunctionComicPortalViewController_loadcomicsEnd',data:[20.27,17.51,8.69,38.66,16.94,16.16,16.52,31.7,17.12,17]},{name:'QQVIPFunctionComicPortalViewController_loadcomicsEnd~-[QQVIPFunctionComicPortalViewController viewWillAppear:]',data:[4.84,3.11,24.2,3.05,2.75,3.02,2.68,5.48,2.97,2.64]},{name:'-[QQVIPFunctionComicPortalViewController viewWillAppear:]~-[QQVIPFunctionComicWebViewController loadRequest:]',data:[103.49,86.14,74.69,56.74,88.79000000000001,93.68000000000001,103.91,69.54000000000001,61.93,56.3]},{name:'-[QQVIPFunctionComicWebViewController loadRequest:]~QQVIPFunctionComicPortalViewController_bkbegine',data:[151.22,118.74,104.61,43.27,112.18,58.8,136.73,56.15,115.77,110.46]},{name:'QQVIPFunctionComicPortalViewController_bkbegine~QQVIPFunctionComicPortalViewController_webviews',data:[141.16,131.18,153.13,194.25,106.84,206.26,177.9,123.39,47.16,102.03]},{name:'QQVIPFunctionComicPortalViewController_webviews~QQVIPFunctionComicPortalViewController_adds views',data:[3.42,3.05,3.39,3.41,2.81,3.89,3.46,4.09,3.94,3.34]},{name:'QQVIPFunctionComicPortalViewController_adds views~achive',data:[599.48,469.22,607.78,419.43,441.32,431.03,484.54,481.59,391.95,352.76]}]\""
-	return render(request,'stackedBarChart.html',{'chartData':chartData,'firstDate':firstDate,'dateList':dateList,'tag':tag})
+	return render(request,'stackedBarChart.html',returnData)
 
 def login(request):
 	
@@ -426,7 +456,7 @@ def queryRequetForAllRecorderTags(request):
 		retCode = HTTPRSPCode.NOT_LOGIN
 		msg = "user not login"
 	else :
-		tags,queryRecords = queryAllRecorderTags(userId)
+		tags,queryRecords,counts = queryAllRecorderTags(userId)
 	for i in range(len(queryRecords)):
 		print queryRecords[i]
 		item = {"recordId":queryRecords[i].recordId,"recordTag":queryRecords[i].recordTag,"user_id":queryRecords[i].user_id,"recordDate":queryRecords[i].recordDate,"recordDateStr":getDateDayStrFromTimeInterval(float(queryRecords[i].recordDate)/1000.0)}
@@ -440,17 +470,46 @@ def queryAllRecorderTags(userId):
 	tags = CTRecordModel.objects.filter(user_id = userId).values('recordTag').distinct()
 	tagArr = []
 	records = []
+	counts = []
 	for i in range(len(tags)):
-		recorder = CTRecordModel.objects.filter(user_id = userId).filter(recordTag=tags[i]["recordTag"]).order_by("-recordDate")[:1]
+		recorder = CTRecordModel.objects.filter(user_id = userId).filter(recordTag=tags[i]["recordTag"]).order_by("-recordDate")
+		counts.append(len(recorder))
 		records.append(recorder[0])
 		tagArr.append(tags[i]["recordTag"])
 	records.sort(recordModelComp)
-	return tagArr,records
-	
+	return tagArr,records,counts
+
+def queryAllRecorderDates(userId):
+	dates = CTRecordModel.objects.filter(user_id=userId).values('recordDateDayStr').distinct()
+	records = []
+	counts =[]
+	for i in range(len(dates)):
+		items = CTRecordModel.objects.filter(user_id=userId).filter(recordDateDayStr=dates[i]["recordDateDayStr"])
+		itemTags = CTRecordModel.objects.filter(user_id=userId).filter(recordDateDayStr=dates[i]["recordDateDayStr"]).values('recordTag').distinct()
+
+		itemTagsValues = []
+		for j in range(len(itemTags)):
+			itemTagsValues.append(itemTags[j]["recordTag"])
+		records.append({"date":dates[i]["recordDateDayStr"],"tags":itemTagsValues,"count":len(items)})
+	records.sort(dateStrComp)
+	return dates,records
+
 def recordModelComp(a,b):
 
 	date1 = float(a.recordDate)
 	date2 = float(b.recordDate)
+	if date1 < date2:
+		return 1
+	elif date1 > date2:
+		return -1
+	else :
+		return 0
+
+def dateStrComp(a,b):
+	
+	print a
+	date1 = a["date"]
+	date2 = b["date"]
 	if date1 < date2:
 		return 1
 	elif date1 > date2:

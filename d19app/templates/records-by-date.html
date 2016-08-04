@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-  <title>record-tags</title>
+  <title>record-by-date</title>
 
   <!-- Bootstrap -->
   <link href="static/libs/bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet">
@@ -21,9 +21,9 @@
 
       var navStr = $("#nav-option-group").html();
       if (item == "tag") {
-         navStr = "<li id='nav-date-item'><a href='/records-by-date'>Date</a></li><li  class='active' id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
+         navStr = "<li id='nav-date-item'><a href='#'>Date</a></li><li  class='active' id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
       }else if (item == "date"){
-        navStr = "<li class='active' id='nav-date-item'><a href='/records-by-date'>Date</a></li><li id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
+        navStr = "<li class='active' id='nav-date-item'><a href='#'>Date</a></li><li id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
      }
       $("#nav-option-group").html(navStr);
   }
@@ -36,16 +36,16 @@
   <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
   <![endif]-->
 </head>
-<body onload="setNavItemActive('tag')">
+<body onload="setNavItemActive('date')">
   {% include 'CTRNavBar.html' %}
   {% load filters %}
 
   <div class="container">
     <div class="panel panel-default">
     <!-- Default panel contents -->
-      <div class="panel-heading">My Tags</div>
+      <div class="panel-heading">My Dates</div>
       <div class="panel-body">
-      <p>这些是您使用的所有标签，按照时间顺序，最近使用排在最前。第一列表示标签名，第二列表示该标签的最后一条记录时间。点击标签行可进入对应的数据展示页。</p>
+      <p>这些是您有监控数据的日期，第一列表示日期，第二列表示当日纪录的所有标签，也是按时间排序的，第三列表示当天纪录的条数。点击日期可进入相应的数据展示页。</p>
       </div>
 
       <!-- Table -->
@@ -54,9 +54,9 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Tag Name</th>
-            <th>Last Record Date</th>
-            <th>Count Of Records</th>
+            <th>Date</th>
+            <th>Tags That date</th>
+            <th>Records Count</th>
           </tr>
         </thead>
 
@@ -64,8 +64,8 @@
           {% for item in records %}
           <tr>
             <th scope="row">{{forloop.counter}}</th>
-            <td><a href="/records-stackedBar?tag={{item|dic_key:"recordTag"}}">{{item|dic_key:"recordTag"}}</a></td>
-            <td>{{item|dic_key:"recordDateStr"}}</td>
+            <td><a href="/records-stackedBar?date={{item|dic_key:"date"}}">{{item|dic_key:"date"}}</a></td>
+            <td>{{item|dic_key:"tags"}}</td>
             <td>{{item|dic_key:"count"}}</td>
           </tr>
           {% endfor %}

@@ -56,4 +56,11 @@ class RequestUtil(object):
 		elif request.method == 'GET':
 			value = request.GET.get(key,'')
 		return value
+
+	@staticmethod
+	def getAllParams(request):
+		if request.method == 'POST':
+			return request.POST
+		elif request.method == 'GET':
+			return request.GET
 		

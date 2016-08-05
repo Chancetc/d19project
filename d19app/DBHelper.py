@@ -4,6 +4,10 @@ from d19app.models import CTRecordModel
 from d19app.models import CTRecordPoint
 from d19app.HTTPUtil import HTTPRSPCode
 from d19app.DateUtil import DateUtil
+from d19app.CTLogger import CTLogger
+
+import logging  
+import logging.handlers
 
 class DBHelper(object):
 	"""docstring for DBHelper"""
@@ -23,9 +27,9 @@ class DBHelper(object):
 			user,created = CTRUser.objects.get_or_create(userName=userName)
 			user.save()
 			if created:
-				print "user created:" + str(user)
+				logging.info("user created:" + str(user))
 			else:
-				print "user found:" + str(user)
+				logging.info("user found:" + str(user))
 		
 			for record in records:
 				if not (record.has_key('recordTag') and record.has_key('recordDate') and record.has_key('points')):
@@ -41,8 +45,8 @@ class DBHelper(object):
 					errCode = tempCode
 					errMsg = tempMsg
 		if errCode == 0:
-			print "RECORDS SAVE TASK SUCCESS!"
+			logging.info("RECORDS SAVE TASK SUCCESS!")
 		else:
-			print "ERR AT SAIVNG TASK:" + errMsg
+			logging.error("ERR AT SAIVNG TASK:" + errMsg)
 
 		return errCode,errMsg

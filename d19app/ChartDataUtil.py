@@ -1,6 +1,9 @@
 from d19app.DateUtil import DateUtil
 from d19app.models import CTRecordModel
 from d19app.models import CTRecordPoint
+from d19app.CTLogger import CTLogger
+import logging  
+import logging.handlers
 
 class ChartDataUtil(object):
 	"""docstring for ChartDataUtil"""
@@ -16,12 +19,8 @@ class ChartDataUtil(object):
 		dateList = []
 		resultData = {}
 
+		logging.info("original recordsArr len:"+str(len(recordsArr)))
 		for record in recordsArr:
-			print "haha"
-			print record
-			print "recordArr"
-			print recordsArr
-
 			points = CTRecordPoint.objects.filter(fatherRecord = record).order_by("index")
 			if points == None or len(points) == 0 :
 				continue 
@@ -30,9 +29,6 @@ class ChartDataUtil(object):
 
 			keys = []
 			times = []
-			print "\n##############################"
-			print points
-			print "##############################"
 			for point in points:
 				if lastKey == '' or lastTime == 0:
 					lastKey = point.key
@@ -50,13 +46,13 @@ class ChartDataUtil(object):
 				standardKeyArr = keys
 				standardKeyArr.reverse()
 
-			print "standardKeys: " + standardKeys + "\ncurrentKeys: " + thisKeys
+			# print "standardKeys: " + standardKeys + "\ncurrentKeys: " + thisKeys
 			if thisKeys == standardKeys:
 				times.reverse()
 				timesArr.append(times)
 				dateList.append(DateUtil.getDateStrFromTimeInterval(float(record.recordDate)/1000.0))
 			else :
-				print "this key IS not equal to standard key!"
+				logging.error("this key IS not equal to standard key!\nTHIS KEY:["+thisKeys+"]\nSTANDARD:["+standardKeys+"]\n")
 
 		resultStr = "["
 		resultArr = []
@@ -69,11 +65,8 @@ class ChartDataUtil(object):
 			resultArr.append(resultItem)
 	
 		resultStr = "[" + ",".join(resultArr) + "]"
-
-		print "\nresult of getHighChartDataFromRecords:" + resultStr
-		print "length of result :"
-		print len(dateList)
 		resultData = {"chartData":resultStr,"firstDate":DateUtil.getDateDayStrFromTimeInterval(float(recordsArr[0].recordDate)/1000.0),"dateList":dateList,"tag":recordsArr[0].recordTag}
+		logging.info("return:"+str(resultData))
 		return resultData
 
 		

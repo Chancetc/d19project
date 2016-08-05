@@ -7,6 +7,7 @@ from d19app.HTTPUtil import HTTPRSPCode
 from d19app.HTTPUtil import ResponseUtil
 from d19app.HTTPUtil import RequestUtil
 from d19app.ChartDataUtil import ChartDataUtil
+from d19app.CTLogger import CTLogger
 from d19app.DBHelper import DBHelper
 from d19app.DateUtil import DateUtil
 from d19app.SessionUtil import SessionUtil
@@ -16,12 +17,15 @@ import random
 import time
 import string
 import json
+import logging  
+import logging.handlers
 
 # Create your views here.
 
 # Views
 def signInByAction(request):
 	
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	name = RequestUtil.getParamFromRequest(request,'username')
 	# users = CTRUser.objects.filter(userName = name)
 
@@ -29,82 +33,94 @@ def signInByAction(request):
 	# 	print "db without userName:" + name
 	# 	return HttpResponse(u"there is no data for user:" + name)
 	SessionUtil.setUserNameToSession(request.session,name)
-	print "set name:" + name + "to session success"
+	logging.info("set name:" + name + "to session success")
 	return home(request)
 
 def home(request):
 
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	userName = SessionUtil.getUserNameFromSession(request.session)
 	if userName == None:
-		print "session without userName"
+		logging.error("session without userName")
 		return login(request)
 
 	#获取当前对象
-	print "get name form session:" + userName
+	logging.info("get name from session:" + userName)
+
 	users = CTRUser.objects.filter(userName = userName)
 	if len(users) == 0:
-		print "db without userName:" + userName
+		logging.error("db without userName:" + userName)
 		return login(request)
 	return render(request,'home.html')
 
 #用户标签列表
 def my_tags(request):
+
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	userId = SessionUtil.getUserIdFromSession(request.session)
 	tags = []
 	queryRecords = []
 	resultRecords = []
 	countsDic = {}
-	print "my_tags :userId " + str(userId)
+	logging.info("my_tags :userId " + str(userId))
 	if not userId:
 		return login(request)
 	else :
 		tags,queryRecords,countsDic = queryAllRecorderTags(userId)
 	for i in range(len(queryRecords)):
-		print queryRecords[i]
+		# print queryRecords[i]
 		item = {"recordId":queryRecords[i].recordId,"count":countsDic[queryRecords[i].recordTag],"recordTag":queryRecords[i].recordTag,"user_id":queryRecords[i].user_id,"recordDate":float(queryRecords[i].recordDate)/1000.0,"recordDateStr":DateUtil.getDateDayStrFromTimeInterval(float(queryRecords[i].recordDate)/1000.0)}
 		resultRecords.append(item)
 	data = {'tags':tags,'records':resultRecords}
+	logging.info("return:"+str(data))
 	return render(request,'record-tags.html',data)
 
 #用户日期列表
 def my_dates(request):
 
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	userId = SessionUtil.getUserIdFromSession(request.session)
 	dates = []
 	tags = []
 	queryRecords = []
 	resultRecords = []
-	print "my_dates :userId " + str(userId)
+	logging.info("my_dates :userId " + str(userId))
 	if not userId:
+		logging.error("not log in")
 		return login(request)
 	else :
 		dates,records = queryAllRecorderDates(userId)
 
 	data = {'dates':dates,'records':records}
+	logging.info("return:"+str(data))
 	return render(request,'records-by-date.html',data)
 
 #帮助页面
 def user_help(request):
 
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	return render(request,'help.html')
 	
 #查询结果展示页面
 def records_stackedBar(request):
 
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	userId = SessionUtil.getUserIdFromSession(request.session)
 	tag = RequestUtil.getParamFromRequest(request,"tag")
 	date = RequestUtil.getParamFromRequest(request,"date")
-	print "userId " + str(userId)
+	logging.info("userId :" + str(userId))
 	if not userId or (not tag and not date):
-		print "return home"
+		logging.error("request:" + str(request) + "--return home")
 		return home(request)
 
 	returnData = {"date":date,"tag":tag}
+	logging.info("return:"+str(returnData))
 	return render(request,'stackedBarChart.html',returnData)
 
 #登录页面
 def login(request):
 	
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	if request.session.has_key('userName'):
 		del request.session['userName'] 
 	if request.session.has_key('userId'):
@@ -117,13 +133,14 @@ def login(request):
 #上传请求
 def uploadRecords(request):
 
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	retCode = HTTPRSPCode.OK
 	msg = "ok"
 	data = []
 
 	if request.method == 'POST':
 		req = json.loads(request.body)
-		print req
+		logging.info(req)
 		if not (req.has_key('userName') and req.has_key('records')):
 			retCode = HTTPRSPCode.INVALID_PARAMS
 			msg = "userName and records requird"
@@ -138,11 +155,13 @@ def uploadRecords(request):
 		retCode = HTTPRSPCode.INVALID_FUNCTION
 		msg = "POST REQUIED"
 
+	logging.info("return:"+str(data))
 	return ResponseUtil.onJsonResponse(retCode,data,msg)
 
 #登录请求
 def signInByAjaxAction(request):
 
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	retCode = HTTPRSPCode.OK
 	msg = "ok"
 	data = {}
@@ -159,7 +178,7 @@ def signInByAjaxAction(request):
 			retCode = HTTPRSPCode.INVALID_PARAMS
 			#success!
 		else :
-			print request.META
+			logging.info(request.META)
 			# print "request.META['HTTP_ORIGIN']:" + str(request.META['HTTP_ORIGIN'])
 			homeUrl = str(request.META['HTTP_HOST'])
 			if not ("http" in homeUrl or "https" in homeUrl):
@@ -167,12 +186,14 @@ def signInByAjaxAction(request):
 			data = {'userName':users[0].userName,'userId':str(users[0].userId),'url':homeUrl}
 			SessionUtil.setUserNameToSession(request.session,userName)
 			SessionUtil.setUserIdToSession(request.session,users[0].userId)
-			print "set name:" + userName + "to session success"
+			logging.info("set name:" + userName + "to session success")
+	logging.info("return:"+str(data))
 	return ResponseUtil.onJsonResponse(retCode,data,msg)
 
 #查询监控数据请求
 def queryRequestForUserRecords(request):
 	
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	# time.sleep(2)
 	retCode = HTTPRSPCode.OK
 	msg = "ok"
@@ -203,11 +224,13 @@ def queryRequestForUserRecords(request):
 
 	data["records"] = recordData;
 	data["count"] = len(recordData)
+	logging.info("return:"+str(data))
 	return ResponseUtil.onJsonResponse(retCode,data,msg)
 
 #查询所有标签请求
 def queryRequetForAllRecorderTags(request):
 
+	logging.info("requestWith:"+str(RequestUtil.getAllParams(request)))
 	retCode = HTTPRSPCode.OK
 	msg = "ok"
 	data = {}
@@ -215,22 +238,23 @@ def queryRequetForAllRecorderTags(request):
 	tags = []
 	queryRecords = []
 	resultRecords = []
-	print "userId " + str(userId)
+	logging.info("userId " + str(userId))
 	if not userId:
 		retCode = HTTPRSPCode.NOT_LOGIN
 		msg = "user not login"
 	else :
 		tags,queryRecords,counts = queryAllRecorderTags(userId)
 	for i in range(len(queryRecords)):
-		print queryRecords[i]
 		item = {"recordId":queryRecords[i].recordId,"recordTag":queryRecords[i].recordTag,"user_id":queryRecords[i].user_id,"recordDate":queryRecords[i].recordDate,"recordDateStr":DateUtil.getDateDayStrFromTimeInterval(float(queryRecords[i].recordDate)/1000.0)}
 		resultRecords.append(item)
 	data = {'tags':tags,'records':resultRecords}
+	logging.info("return:"+str(data))
 	return ResponseUtil.onJsonResponse(retCode,data,msg)
 
 
 def queryAllRecorderTags(userId):
 
+	logging.info("param userId:"+str(userId))
 	tags = CTRecordModel.objects.filter(user_id = userId).values('recordTag').distinct()
 	tagArr = []
 	records = []
@@ -245,6 +269,8 @@ def queryAllRecorderTags(userId):
 
 #查询所有日期请求
 def queryAllRecorderDates(userId):
+
+	logging.info("param userId:"+str(userId))
 	dates = CTRecordModel.objects.filter(user_id=userId).values('recordDateDayStr').distinct()
 	records = []
 	counts =[]
@@ -274,7 +300,6 @@ def recordModelComp(a,b):
 
 def dateStrComp(a,b):
 	
-	print a
 	date1 = a["date"]
 	date2 = b["date"]
 	if date1 < date2:

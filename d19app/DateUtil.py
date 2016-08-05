@@ -14,7 +14,6 @@ class DateUtil(object):
 
 	@staticmethod
 	def getDateStrFromTimeInterval(timeInterval):
-
 		timeArray = time.localtime(timeInterval)
 		dateStr = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
 		dateStr = dateStr + " ("+ str(timeInterval) + ")"

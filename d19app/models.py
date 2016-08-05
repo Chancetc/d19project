@@ -2,8 +2,11 @@
 from django.db import models
 from datetime import datetime
 from django.utils import timezone
+from d19app.CTLogger import CTLogger
 
 import types
+import logging  
+import logging.handlers
 
 # Create your models here.
 
@@ -53,7 +56,7 @@ class CTRecordModel(models.Model):
 		if type(recordDate) is not types.StringType and type(recordDate) is not types.UnicodeType:
 			errMsg = "recordDate type of"+str(type(recordDate))+" should be string type"
 			errCode = -1 
-			print "err at creating record:"+errMsg
+			logging.error("err at creating record:"+errMsg)
 			return errCode,errMsg
 		record = CTRecordModel()
 		record.recordTag = recordTag
@@ -77,9 +80,9 @@ class CTRecordModel(models.Model):
 				errMsg = tempMsg
 
 		if errCode == 0:
-			print "record created:" + str(record)
+			logging.info("record created:" + str(record))
 		else:
-			print "err at creating record:"+errMsg
+			logging.error("err at creating record:"+errMsg)
 		
 		return errCode,errMsg
 
@@ -156,8 +159,8 @@ class CTRecordPoint(models.Model):
 		point.index = index
 		point.save()
 		if errCode == 0:
-			print "point created:" + str(point)
+			logging.info("point created:" + str(point))
 		else:
-			print "err at creating point:"+errMsg
+			logging.error("err at creating point:"+errMsg)
 		return errCode,errMsg
 

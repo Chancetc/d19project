@@ -391,6 +391,8 @@ def queryRecords(userId,tag,recordDate,start,end):
 		records = CTRecordModel.objects.filter(user_id = userId).filter(recordTag = tag).filter(recordDateDayStr=recordDate).order_by("-recordDate")[start:end]
 	elif tag :
 		records = CTRecordModel.objects.filter(user_id = userId).filter(recordTag = tag).order_by("-recordDate")[start:end]
+	elif recordDate :
+		records = CTRecordModel.objects.filter(user_id = userId).filter(recordDateDayStr=recordDate).order_by("-recordDate")[start:end]
 	else :
 		records = CTRecordModel.objects.filter(user_id = userId).order_by("-recordDate")[start:end]
 		# 如何分类

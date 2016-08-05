@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
   <title>record-tags</title>
-
   <!-- Bootstrap -->
   <link href="static/libs/bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="static/css/ctrcommenstyle.css">
@@ -15,7 +14,6 @@
   <script src="static/js/jquery-1.12.0.min.js"></script>
   <!-- Include all compiled plugins (below), or include individual files as needed -->
   <script src="static/libs/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
-  
   <script type="text/javascript">
     function setNavItemActive(item){
 
@@ -24,11 +22,10 @@
          navStr = "<li id='nav-date-item'><a href='/records-by-date'>Date</a></li><li  class='active' id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
       }else if (item == "date"){
         navStr = "<li class='active' id='nav-date-item'><a href='/records-by-date'>Date</a></li><li id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
-     }
+      }
       $("#nav-option-group").html(navStr);
   }
   </script>
-  
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -45,7 +42,7 @@
     <!-- Default panel contents -->
       <div class="panel-heading">My Tags</div>
       <div class="panel-body">
-      <p>这些是您使用的所有标签，按照时间顺序，最近使用排在最前。第一列表示标签名，第二列表示该标签的最后一条记录时间。点击标签行可进入对应的数据展示页。</p>
+        <p>这些是您使用的所有标签，按照时间顺序，最近使用排在最前。第一列表示标签名，第二列表示该标签的最后一条记录时间。点击标签行可进入对应的数据展示页。</p>
       </div>
 
       <!-- Table -->
@@ -75,6 +72,5 @@
       
     </div>
   </div>
-
 </body>
 </html>

@@ -6,7 +6,9 @@ $(document).ready(function(){
 	});
 });
 
+// 登录接口
 function signInAccount(){
+  
   userName = $("input#username-login-input").val();
   password = $("input#username-password-input").val();
   if (!userName) {

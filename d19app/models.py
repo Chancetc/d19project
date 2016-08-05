@@ -83,6 +83,46 @@ class CTRecordModel(models.Model):
 		
 		return errCode,errMsg
 
+	@staticmethod
+	def queryRecordsWithFragment(userId,tag,recordDate,start,end,fragment):
+
+		resultData = []
+		records = []
+		if not userId or start>end or start<0:
+			return records
+		if tag and recordDate :
+			records = CTRecordModel.objects.filter(user_id = userId).filter(recordTag = tag).filter(recordDateDayStr=recordDate).order_by("-recordDate")[start:end]
+		elif tag :
+			records = CTRecordModel.objects.filter(user_id = userId).filter(recordTag = tag).order_by("-recordDate")[start:end]
+		elif recordDate :
+			records = CTRecordModel.objects.filter(user_id = userId).filter(recordDateDayStr=recordDate).order_by("-recordDate")[start:end]
+		else :
+			records = CTRecordModel.objects.filter(user_id = userId).order_by("-recordDate")[start:end]
+
+		# 时间复杂度O(n)
+		tagsArr = []
+		#用tag作为key将records放入字典容器	
+		recordDicWithTagKey = {}
+		for i in range(len(records)):
+			recordItem = records[i]
+			if not (recordItem.recordTag in tagsArr):
+				tagsArr.append(recordItem.recordTag)
+				recordDicWithTagKey[recordItem.recordTag] = [recordItem]
+			else :
+				recordDicWithTagKey[recordItem.recordTag].append(recordItem)
+		#将每个tag对应的records按照fragment个切割数组 并生成chart数据
+		for i in range(len(tagsArr)):
+			tag = tagsArr[i]
+			recordsBySpeTag = recordDicWithTagKey[tag]
+			tempArr =[]
+			for j in range(len(recordsBySpeTag)):
+				tempArr.append(recordsBySpeTag[j])
+				if len(tempArr)==fragment or j==(len(recordsBySpeTag)-1):
+					resultData.append(tempArr)
+					tempArr =[]
+
+		return resultData;
+
 #CTRecordPoint
 class CTRecordPoint(models.Model):
 

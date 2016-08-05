@@ -1,16 +1,12 @@
 $(document).ready(function(){
 
-
     // 登录按钮
     $("#all-tag-btn").click(function(){
         // showAllMyTags()
     });
-
     var recordData = $('#chart-container1').attr("value");
     var chartData = getHighChartDataFromRecordData(recordData);
-
     $('#chart-container1').highcharts(chartData);
-    
     $('#nav-progress-bar').animate({
         width:'60%'
     },500);
@@ -55,9 +51,7 @@ function loadUserRecords(tag,date,start,end){
                     setTimeout(function(){
                         document.getElementById("nav-progress-barCon").style.display="none";
                     },500);
-                    
                 });
-                
             }
         }
     });
@@ -91,16 +85,17 @@ function constructDomsWithRecordDatas(recordDatas){
     }
 }
 
+// 选中item
 function setNavItemActive(item){
 
-      var navStr = $("#nav-option-group").html();
-      if (item == "tag") {
-         navStr = "<li id='nav-date-item'><a href='/records-by-date'>Date</a></li><li  class='active' id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
-      }else if (item == "date"){
+    var navStr = $("#nav-option-group").html();
+    if (item == "tag") {
+        navStr = "<li id='nav-date-item'><a href='/records-by-date'>Date</a></li><li  class='active' id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
+    }else if (item == "date"){
         navStr = "<li class='active' id='nav-date-item'><a href='/records-by-date'>Date</a></li><li id='nav-tag-item'><a href='/my-tags'>Tag</a></li>";
-     }
-      $("#nav-option-group").html(navStr);
-  }
+    }
+    $("#nav-option-group").html(navStr);
+}
 
 // 根据rawdata生成图表可用的图表数据
 function getHighChartDataFromRecordData(recordData){
@@ -133,6 +128,7 @@ function getHighChartDataFromRecordData(recordData){
     high['series'] = eval(recordData)
     return high;
 }
+
 function getCookie(c_name){
     
     if (document.cookie.length>0){ 

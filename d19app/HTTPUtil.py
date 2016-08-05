@@ -41,4 +41,19 @@ class ResponseUtil(object):
 	@staticmethod
 	def onJsonResponse(retCode,data,msg):
 		return HttpResponse(json.dumps(ResponseUtil.onResponse(retCode,data,msg)), content_type = 'application/json')
+
+class RequestUtil(object):
+	"""docstring for RequestUtil"""
+	def __init__(self, arg):
+		super(RequestUtil, self).__init__()
+		self.arg = arg
+		
+	@staticmethod
+	def getParamFromRequest(request,key):
+		value = ""
+		if request.method == 'POST':
+			value = request.POST.get(key,'')
+		elif request.method == 'GET':
+			value = request.GET.get(key,'')
+		return value
 		

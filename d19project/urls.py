@@ -27,8 +27,6 @@ urlpatterns = [
 
     url(r'^records-stackedBar',views.records_stackedBar,name='records_stackedBar'),
 
-    url(r'^my_login',views.my_login,name='my_login'),
-
     url(r'^login',views.login,name='login'),
 
     url(r'^signInByAction',views.signInByAction,name='signInByAction'),

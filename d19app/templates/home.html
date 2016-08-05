@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>CTRecorder</title>
-
     <!-- Bootstrap -->
     <link href="static/libs/bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/css/ctrcommenstyle.css">
@@ -15,11 +14,9 @@
     <script src="static/js/jquery-1.12.0.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="static/libs/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
-
     <script src="static/libs/Highcharts-4.2.1/js/highcharts.js"></script>
     <script src="static/libs/Highcharts-4.2.1/js/modules/exporting.js"></script>
     <script type="text/javascript" src="static/js/highChartStackBar.js"> </script>
-    
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -27,30 +24,13 @@
       <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body onload="loadUserRecords('','',0,100)">
 
+  <body onload="loadUserRecords('','',0,100)">
     {% include 'progressBar-green.html' %}
   	{% include 'CTRNavBar.html' %}
 
-    
     <div id="main-contaner" class="container">
-
-    	<!-- <div class="row" role = "main">
-        <h2>日期: {{firstDate}}</h2>
-    		<div class="col-md-5">
-          <ul class="record-date-ul">
-            {% for item in dateList %}
-              <li>Record {{forloop.counter}}: tag:{{tag}} date: {{item}}</li>
-            {% endfor %}
-          </ul>
-    		</div>
-    		<div class="col-md-7">
-    			<div id="chart-container1" class="chart-container" value = "{{chartData|safe}}"></div>
-    		</div>
-    	</div> -->
-
-
     </div>
-
   </body>
+
 </html>
